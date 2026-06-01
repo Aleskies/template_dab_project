@@ -1,0 +1,38 @@
+# Databricks App Configuration for Flask Application
+# This file defines the Databricks App resource for the Flask ML serving application
+
+resources:
+  apps:
+    ml_flask_app:
+      name: "ML Flask App - ${bundle.target}"
+      description: "Flask application for ML model serving"
+      
+      # Source code configuration
+      source_code_path: ./flask_app
+      
+      # Environment variables
+      config:
+        env:
+          - name: MODEL_NAME
+            value: "${var.model_name}"
+          - name: MODEL_VERSION
+            value: "${var.model_version}"
+      
+      # Resources allocation
+      resources:
+        - name: default
+          sql_warehouse_id: "${var.warehouse_id}"
+
+# Variables for the app
+variables:
+  model_name:
+    description: "Name of the ML model to serve"
+    default: "my_ml_model"
+  
+  model_version:
+    description: "Version or alias of the model (e.g., Production, Staging, 1, 2)"
+    default: "Production"
+  
+  warehouse_id:
+    description: "SQL Warehouse ID for the app"
+    default: ""

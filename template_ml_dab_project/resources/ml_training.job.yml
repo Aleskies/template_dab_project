@@ -1,0 +1,99 @@
+# ML Training Job Configuration
+# This job trains ML models using the ml_models module
+
+resources:
+  jobs:
+    ml_training_job:
+      name: "ML Training Job - ${bundle.target}"
+      
+      tasks:
+        - task_key: train_model
+          description: "Train ML model and register in MLflow"
+          
+          python_task:
+            python_file: ../ml_models/train.py
+            parameters:
+              - "--catalog"
+              - "${var.catalog}"
+              - "--schema"
+              - "${var.schema}"
+              - "--train-table"
+              - "train_data"
+              - "--model-name"
+              - "my_ml_model"
+              - "--task-type"
+              - "classification"
+              - "--register"
+          
+          libraries:
+            - pypi:
+                package: scikit-learn>=1.4.0
+            - pypi:
+                package: mlflow>=2.10.0
+            - pypi:
+                package: pandas>=2.1.0
+            - pypi:
+                package: numpy>=1.26.0
+          
+          new_cluster:
+            spark_version: "14.3.x-scala2.12"
+            node_type_id: "i3.xlarge"
+            num_workers: 2
+            spark_conf:
+              "spark.databricks.cluster.profile": "singleNode"
+            custom_tags:
+              ResourceClass: "SingleNode"
+      
+      # Optional: Schedule for automatic training
+      # schedule:
+      #   quartz_cron_expression: "0 0 2 * * ?"  # Daily at 2 AM
+      #   timezone_id: "America/Los_Angeles"
+      
+      # Email notifications
+      email_notifications:
+        on_success:
+          - "${workspace.current_user.userName}"
+        on_failure:
+          - "${workspace.current_user.userName}"
+
+    ml_batch_prediction_job:
+      name: "ML Batch Prediction Job - ${bundle.target}"
+      
+      tasks:
+        - task_key: batch_predict
+          description: "Make batch predictions on new data"
+          
+          python_task:
+            python_file: ../ml_models/predict.py
+            parameters:
+              - "--model-name"
+              - "my_ml_model"
+              - "--model-version"
+              - "Production"
+              - "--input-table"
+              - "${var.catalog}.${var.schema}.test_data"
+              - "--output-table"
+              - "${var.catalog}.${var.schema}.predictions"
+              - "--batch-size"
+              - "1000"
+          
+          libraries:
+            - pypi:
+                package: scikit-learn>=1.4.0
+            - pypi:
+                package: mlflow>=2.10.0
+            - pypi:
+                package: pandas>=2.1.0
+            - pypi:
+                package: numpy>=1.26.0
+          
+          new_cluster:
+            spark_version: "14.3.x-scala2.12"
+            node_type_id: "i3.xlarge"
+            num_workers: 2
+      
+      email_notifications:
+        on_success:
+          - "${workspace.current_user.userName}"
+        on_failure:
+          - "${workspace.current_user.userName}"

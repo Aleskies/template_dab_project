@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Model API - Databricks App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 ML Model API</h1>
+            <p class="subtitle">Databricks Flask Application</p>
+        </header>
+
+        <section class="model-info">
+            <h2>📊 Model Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Model Name:</span>
+                    <span class="value">{{ model_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Version:</span>
+                    <span class="value">{{ model_version }}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-docs">
+            <h2>📖 API Endpoints</h2>
+            
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> /health</h3>
+                <p>Health check endpoint to verify the application status.</p>
+                <div class="code-block">
+                    <code>curl -X GET https://your-app-url/health</code>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> /model-info</h3>
+                <p>Get detailed information about the loaded model.</p>
+                <div class="code-block">
+                    <code>curl -X GET https://your-app-url/model-info</code>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> /predict</h3>
+                <p>Make predictions using the loaded ML model.</p>
+                <div class="code-block">
+                    <code>
+curl -X POST https://your-app-url/predict \
+  -H "Content-Type: application/json" \
+  -d '{"feature1": value1, "feature2": value2}'
+                    </code>
+                </div>
+                <h4>Expected Response:</h4>
+                <div class="code-block">
+                    <code>
+{
+  "prediction": [result],
+  "timestamp": "2024-01-01T12:00:00",
+  "model": "{{ model_name }}",
+  "version": "{{ model_version }}"
+}
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <section class="test-section">
+            <h2>🧪 Test the API</h2>
+            <form id="predictionForm">
+                <label for="inputData">Input Data (JSON):</label>
+                <textarea id="inputData" rows="6" placeholder='{"feature1": 1.0, "feature2": 2.0}'></textarea>
+                <button type="submit">Make Prediction</button>
+            </form>
+            <div id="result" class="result"></div>
+        </section>
+
+        <footer>
+            <p>Built with Flask on Databricks Apps</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputData = document.getElementById('inputData').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const data = JSON.parse(inputData);
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                resultDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+                resultDiv.className = 'result success';
+            } catch (error) {
+                resultDiv.innerHTML = `<pre>Error: ${error.message}</pre>`;
+                resultDiv.className = 'result error';
+            }
+        });
+    </script>
+</body>
+</html>
