@@ -8,9 +8,9 @@ import mlflow
 from typing import Union, List, Dict, Any
 import argparse
 
-from model_config import ModelConfig
-from feature_engineering import FeatureEngineer
-from mlflow_utils import MLflowTracker
+from ml_models.model_config import ModelConfig
+from ml_models.feature_engineering import FeatureEngineer
+from ml_models.mlflow_utils import MLflowTracker
 
 
 class ModelPredictor:
