@@ -1,0 +1,23 @@
+artifact_path: file:///C:/Users/alexi/Desktop/1.Proyectos_ciencia_datos/template_dab_project/mlruns/1/models/m-c9e104fe0a2d453f8aa7d5b23a3d6395/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.2
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.12.0
+model_id: m-c9e104fe0a2d453f8aa7d5b23a3d6395
+model_size_bytes: 446289
+model_uuid: m-c9e104fe0a2d453f8aa7d5b23a3d6395
+prompts: null
+run_id: ecb65fa82f1a4d958f0dde28e0a6ac63
+utc_time_created: '2026-06-01 02:41:01.743734'

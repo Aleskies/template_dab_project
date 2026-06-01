@@ -99,6 +99,15 @@ trainer.run_training_pipeline(
 )
 ```
 
+CLI: Entrenar con script del paquete (usa entorno activado):
+
+```powershell
+# usando entry point instalado
+train --help
+# o con Python directamente
+python -m template_ml_dab_project.ml --help
+```
+
 ### 3. Desplegar Aplicación Flask
 
 ```bash
@@ -335,6 +344,55 @@ DATABRICKS_TOKEN=your-token
 CATALOG=workspace
 SCHEMA=my_schema
 ```
+
+## 🛠️ Configurar entorno virtual (Windows)
+
+Pasos rápidos para crear y activar un entorno virtual llamado `proyecto_dab` en Windows (PowerShell):
+
+1. Crear el entorno virtual (usa Python 3.12+ si vas a usar `databricks-connect`):
+
+```powershell
+python -m venv proyecto_dab
+```
+
+2. Activar el entorno en PowerShell (ejemplo que funciona en esta máquina):
+
+```powershell
+.\proyecto_dab\Scripts\activate
+# o alternativamente (PowerShell explícito)
+.\proyecto_dab\Scripts\Activate.ps1
+```
+
+Después de activar el entorno, verifica la versión de Python y actualiza `pip`:
+
+```powershell
+python --version
+python -m pip install --upgrade pip
+```
+
+3. Instalar el paquete local y dependencias de desarrollo mínimas:
+
+```powershell
+pip install -e .
+# Dev tooling for building and deploying bundles
+pip install build databricks-cli databricks-sdk pytest ruff databricks-dlt databricks-connect ipykernel
+```
+
+4. Configurar variables de entorno de Databricks (sesión actual):
+
+```powershell
+$env:DATABRICKS_HOST = "https://dbc-6a5addb8-c11c.cloud.databricks.com"
+$env:DATABRICKS_TOKEN = "<TU_TOKEN_AQUI>"
+```
+
+Si prefieres `conda`, crea un entorno con Python 3.12:
+
+```powershell
+conda create -n proyecto_dab python=3.12 -y
+conda activate proyecto_dab
+```
+
+Consejo: `databricks-connect` requiere Python >= 3.12; si tienes Python 3.11, instala Python 3.12 o usa `conda` con la versión adecuada.
 
 ## 🎓 Ejemplos de Uso
 

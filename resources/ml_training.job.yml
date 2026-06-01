@@ -10,8 +10,9 @@ resources:
         - task_key: train_model
           description: "Train ML model and register in MLflow"
           
-          python_task:
-            python_file: ../ml_models/train.py
+          python_wheel_task:
+            package_name: template_ml_dab_project
+            entry_point: train
             parameters:
               - "--catalog"
               - "${var.catalog}"
@@ -24,16 +25,6 @@ resources:
               - "--task-type"
               - "classification"
               - "--register"
-          
-          libraries:
-            - pypi:
-                package: scikit-learn>=1.4.0
-            - pypi:
-                package: mlflow>=2.10.0
-            - pypi:
-                package: pandas>=2.1.0
-            - pypi:
-                package: numpy>=1.26.0
           
           new_cluster:
             spark_version: "14.3.x-scala2.12"
@@ -63,8 +54,9 @@ resources:
         - task_key: batch_predict
           description: "Make batch predictions on new data"
           
-          python_task:
-            python_file: ../ml_models/predict.py
+          python_wheel_task:
+            package_name: template_ml_dab_project
+            entry_point: predict
             parameters:
               - "--model-name"
               - "my_ml_model"
@@ -76,16 +68,6 @@ resources:
               - "${var.catalog}.${var.schema}.predictions"
               - "--batch-size"
               - "1000"
-          
-          libraries:
-            - pypi:
-                package: scikit-learn>=1.4.0
-            - pypi:
-                package: mlflow>=2.10.0
-            - pypi:
-                package: pandas>=2.1.0
-            - pypi:
-                package: numpy>=1.26.0
           
           new_cluster:
             spark_version: "14.3.x-scala2.12"
